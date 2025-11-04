@@ -1,4 +1,4 @@
-# Metropolitan-Museum-Of-Art-Data
+# Metropolitan-Museum-Data
 Repo for collecting and analyzing data from the MET. 
 
 ## Resources
