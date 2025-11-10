@@ -11,24 +11,30 @@ import sqlite3
 conn = sqlite3.connect("../data/met.db")
 cursor = conn.cursor()
 
+# Department table - contains department name and id
 conn.execute(
     '''
     CREATE TABLE IF NOT EXISTS Department (
         department_id INTEGER PRIMARY KEY,
-        display_name TEXT not null
+        display_name TEXT NOT NULL
     )
 '''
 )
 
+# Objects table - linking table between Art and Departments
+# all objects must have a department
 conn.execute(
     '''
     CREATE TABLE IF NOT EXISTS Objects (
-        department_id INTEGER PRIMARY KEY,
-        object_id INTEGER NOT NULL
+        department_id INTEGER NOT NULL,
+        object_id INTEGER PRIMARY KEY
     )
     '''
 )
 
+
+# Art table - contains all information about the piece in question
+# Links to the Artists table via artist_id, but not a required link
 conn.execute(
     '''
     CREATE TABLE IF NOT EXISTS Art (
@@ -66,10 +72,11 @@ conn.execute(
     '''
 )
 
+# Artists table - contains all information about the artist
 conn.execute(
     '''
     CREATE TABLE IF NOT EXISTS Artists (
-        artist_id INTEGER PRIMARY KEY,
+        artist_id INTEGER PRIMARY KEY AUTOINCREMENT,
         artistName TEXT,
         artistAlphaSort TEXT,
         artistNationality TEXT,
