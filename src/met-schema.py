@@ -8,7 +8,7 @@ import numpy as np
 import sqlite3
 
 # Create tables in sqlite
-conn = sqlite3.connect("../data/met.db")
+conn = sqlite3.connect("data/met.db")
 cursor = conn.cursor()
 
 # Department table - contains department name and id
