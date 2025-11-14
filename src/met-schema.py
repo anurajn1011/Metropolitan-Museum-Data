@@ -50,7 +50,8 @@ conn.execute(
         dynasty TEXT,
         reign TEXT,
         portfolio TEXT,
-        artist_id INTEGER,
+        artistWikidata_URL TEXT,
+        artistAlphaSort TEXT,
         objectBeginDate TEXT,
         objectEndDate TEXT,
         medium TEXT,
@@ -75,9 +76,9 @@ conn.execute(
 conn.execute(
     '''
     CREATE TABLE IF NOT EXISTS Artists (
-        artist_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        artistName TEXT UNIQUE,
-        artistAlphaSort TEXT,
+        artistWikidata_URL INTEGER,
+        artistName TEXT,
+        artistAlphaSort TEXT PRIMARY KEY,
         artistNationality TEXT,
         artistBeginDate TEXT,
         artistEndDate TEXT
