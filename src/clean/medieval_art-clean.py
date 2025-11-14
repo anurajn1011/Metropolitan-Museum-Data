@@ -1,3 +1,8 @@
+'''
+medieval_art-clean.py
+Cleaning the medieval_art data from the MET API.
+'''
+
 import os
 import pandas as pd
 import numpy as np

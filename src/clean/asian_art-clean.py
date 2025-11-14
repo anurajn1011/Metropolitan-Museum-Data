@@ -1,3 +1,8 @@
+'''
+asian_art-clean.py
+Cleaning the asian_art data from the MET API.
+'''
+
 import os
 import pandas as pd
 import numpy as np

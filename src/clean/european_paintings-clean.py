@@ -1,3 +1,8 @@
+'''
+european_paintings-clean.py
+Cleaning the european_paintings data from the MET API.
+'''
+
 import os
 import pandas as pd
 import numpy as np

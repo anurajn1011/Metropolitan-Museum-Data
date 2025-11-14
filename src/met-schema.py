@@ -76,7 +76,7 @@ conn.execute(
     '''
     CREATE TABLE IF NOT EXISTS Artists (
         artist_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        artistName TEXT,
+        artistName TEXT UNIQUE,
         artistAlphaSort TEXT,
         artistNationality TEXT,
         artistBeginDate TEXT,

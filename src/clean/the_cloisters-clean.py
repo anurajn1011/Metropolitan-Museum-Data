@@ -1,3 +1,8 @@
+'''
+the_cloisters-clean.py
+Cleaning the the_cloisters data from the MET API.
+'''
+
 import os
 import pandas as pd
 import numpy as np
