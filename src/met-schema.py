@@ -8,7 +8,7 @@ import numpy as np
 import sqlite3
 
 # Create tables in sqlite
-conn = sqlite3.connect("../data/met.db")
+conn = sqlite3.connect("data/met.db")
 cursor = conn.cursor()
 
 # Department table - contains department name and id
@@ -57,7 +57,6 @@ conn.execute(
         height REAL,
         width REAL,
         length REAL,
-        weight REAL,
         creditLine TEXT,
         city TEXT,
         state TEXT,
@@ -77,7 +76,7 @@ conn.execute(
     '''
     CREATE TABLE IF NOT EXISTS Artists (
         artist_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        artistName TEXT,
+        artistName TEXT UNIQUE,
         artistAlphaSort TEXT,
         artistNationality TEXT,
         artistBeginDate TEXT,
