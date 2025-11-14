@@ -84,14 +84,16 @@ print(f"Objects data shape: {objects_df.shape}\n")
         Objects: Missing data in accessionYear, artistID, height, width, and length. We can fill
         in the accessionYear as "unknown" as well. For height, width, and length we can simply
         leave it as is, could be handled later on since we do not want any EDA to be done with 
-        0's imputed. As for artistID, this is the more concerning one. None of the pieces have 
+        0's imputed. As for artistID, this is the more tedious one. None of the pieces have 
         an artistID associated with them, since all 2348 rows are missing this column.
-        For the purposes of loading the db, we will simply preserve the nulls. 
+        For the purposes of loading the db, we will simply preserve the nulls for now. 
 '''
 
 ### Imputations ###
 artists_df = artists_df.fillna("Unknown")
 objects_df[["accessionYear", "height", "width", "length"]] = objects_df[["accessionYear", "height", "width", "length"]].fillna("Unknown")
+# there are some '' strings in title which we replace with 'Unknown'
+objects_df['title'] = objects_df['title'].fillna('Unknown').replace('', 'Unknown')
 
 # verifying successful imputations
 print(f"Artists data:\n {artists_df.isna().sum()}\n")
@@ -100,8 +102,8 @@ print(f"Objects data:\n {objects_df.isna().sum()}\n")
 
 
 ### Exporting as CSV ####
-path = "data/The Cloisters/cleaned_data"
+path = "data/cleaned_data"
 os.makedirs(path, exist_ok=True)
-artists_df.to_csv("data/The Cloisters/cleaned_data/artists.csv")
-departments_df.to_csv("data/The Cloisters/cleaned_data/departments.csv")
-objects_df.to_csv("data/The Cloisters/cleaned_data/objects.csv")
+artists_df.to_csv("data//cleaned_data/artists_cloisters.csv", index=False)
+departments_df.to_csv("data/cleaned_data/departments_cloisters.csv", index=False)
+objects_df.to_csv("data/cleaned_data/objects_cloisters.csv",index=False)

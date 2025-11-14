@@ -57,7 +57,6 @@ conn.execute(
         height REAL,
         width REAL,
         length REAL,
-        weight REAL,
         creditLine TEXT,
         city TEXT,
         state TEXT,
