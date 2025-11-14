@@ -169,59 +169,13 @@ class MetMuseumFetcher:
         return artist_record
     
     def parse_object_data(self, obj_data: dict, department_id: int) -> Dict:
-        """Map API data to database schema"""
+        """Save all API data plus add department_id"""
+        object_record = dict(obj_data)
         
-        def parse_date(date_value):
-            if date_value:
-                try:
-                    return datetime.fromisoformat(date_value.replace('Z', '+00:00')).isoformat()
-                except:
-                    return None
-            return None
+        object_record["department_id"] = department_id
         
-        def parse_year_to_timestamp(year):
-            try:
-                if year and int(year) > 0:
-                    return datetime(int(year), 1, 1).isoformat()
-            except:
-                pass
-            return None
-        
-        object_record = {
-            "object_id": obj_data.get("objectID"),
-            "department_id": department_id,
-            "isHighlight": obj_data.get("isHighlight", False),
-            "accessionYear": parse_year_to_timestamp(obj_data.get("accessionYear")),
-            "isPublicDomain": obj_data.get("isPublicDomain", False),
-            "primaryImage": obj_data.get("primaryImage", ""),
-            "objectName": obj_data.get("objectName", ""),
-            "title": obj_data.get("title", ""),
-            "culture": obj_data.get("culture", ""),
-            "period": obj_data.get("period", ""),
-            "dynasty": obj_data.get("dynasty", ""),
-            "reign": obj_data.get("reign", ""),
-            "portfolio": obj_data.get("portfolio", ""),
-            "artist_id": None,
-            "objectBeginDate": parse_year_to_timestamp(obj_data.get("objectBeginDate")),
-            "objectEndDate": parse_year_to_timestamp(obj_data.get("objectEndDate")),
-            "medium": obj_data.get("medium", ""),
-            "height": self._parse_dimension(obj_data.get("measurements"), "Height"),
-            "width": self._parse_dimension(obj_data.get("measurements"), "Width"),
-            "length": self._parse_dimension(obj_data.get("measurements"), "Length"),
-            "creditLine": obj_data.get("creditLine", ""),
-            "city": obj_data.get("city", ""),
-            "state": obj_data.get("state", ""),
-            "county": obj_data.get("county", ""),
-            "country": obj_data.get("country", ""),
-            "region": obj_data.get("region", ""),
-            "subregion": obj_data.get("subregion", ""),
-            "excavation": obj_data.get("excavation", ""),
-            "classification": obj_data.get("classification", ""),
-            "isOnView": obj_data.get("GalleryNumber", "") != "",
-            "artistDisplayName": obj_data.get("artistDisplayName", ""),
-            "metadataDate": parse_date(obj_data.get("metadataDate")),
-            "objectURL": obj_data.get("objectURL", "")
-        }
+        if "objectID" in object_record and "object_id" not in object_record:
+            object_record["object_id"] = object_record["objectID"]
         
         return object_record
     
