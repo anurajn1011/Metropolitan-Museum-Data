@@ -12,6 +12,10 @@ import numpy as np
 artists_df = pd.read_json("data/11_European_Paintings/artists.jsonl", lines=True)
 objects_df = pd.read_json("data/11_European_Paintings/objects.jsonl", lines=True)
 
+# replacing empty strings with nulls for analysis
+artists_df = artists_df.replace("", pd.NA)
+objects_df = objects_df.replace("", pd.NA)
+
 ### Checking the null counts of ever column in each dataframe ###
 
 print(f"Artists data:\n {artists_df.isna().sum()}\n")
@@ -21,9 +25,9 @@ print(f"Objects data shape: {objects_df.shape}\n")
 
 '''
 Artists data:
-artist_name           0
+ artist_name           0
 artistAlphaSort       0
-artistNationality     0
+artistNationality     6
 artistBeginDate      51
 artistEndDate        51
 dtype: int64
@@ -31,64 +35,86 @@ dtype: int64
 Artists data shape: (1120, 5)
 
 Objects data:
-object_id               0
-department_id           0
-isHighlight             0
-accessionYear           0
-isPublicDomain          0
-primaryImage            0
-objectName              0
-title                   0
-culture                 0
-period                  0
-dynasty                 0
-reign                   0
-portfolio               0
-artist_id            2639
-objectBeginDate         1
-objectEndDate           1
-medium                  0
-height                  4
-width                   4
-length               2636
-creditLine              0
-city                    0
-state                   0
-county                  0
-country                 0
-region                  0
-subregion               0
-excavation              0
-classification          0
-isOnView                0
-artistDisplayName       0
-metadataDate            0
-objectURL               0
+ objectID                    0
+isHighlight                 0
+accessionNumber             0
+accessionYear               0
+isPublicDomain              0
+primaryImage              284
+primaryImageSmall         284
+additionalImages            0
+constituents                3
+department                  0
+objectName                 11
+title                       0
+culture                  2639
+period                   2639
+dynasty                  2639
+reign                    2639
+portfolio                2639
+artistRole                  3
+artistPrefix             2389
+artistDisplayName           3
+artistDisplayBio           18
+artistSuffix             2616
+artistAlphaSort             4
+artistNationality           9
+artistBeginDate           186
+artistEndDate             186
+artistGender             2595
+artistWikidata_URL        204
+artistULAN_URL            204
+objectDate                610
+objectBeginDate             0
+objectEndDate               0
+medium                      1
+dimensions                  1
+measurements                4
+creditLine                  0
+geographyType            2639
+city                     2639
+state                    2639
+county                   2639
+country                  2639
+region                   2639
+subregion                2639
+locale                   2639
+locus                    2639
+excavation               2639
+river                    2639
+classification              0
+rightsAndReproduction    2637
+linkResource             2639
+metadataDate                0
+repository                  0
+objectURL                   0
+tags                       18
+objectWikidata_URL         14
+isTimelineWork              0
+GalleryNumber            1478
+department_id               0
+object_id                   0
 dtype: int64
 
-Objects data shape: (2639, 33)
-
-    Description:
-        Artists: artistBegin/EndDate are missing some values, just impute them with 'Unknown'
-
-        Objects: Most common missing are artist_id and length. Leave artist_id as is and we can impute length with 
-        0, since paintings can be assumed to have no depth. We also have objectBegin/EndDate and 
-        4 entries of height and width. For the dates, just use 'Unknown' and for height, width use median.
+Objects data shape: (2639, 59)
 '''
 
 ### Imputations ###
 artists_df = artists_df.fillna("Unknown")
-objects_df["length"] = objects_df["length"].fillna(0)
-objects_df["height"] = objects_df["height"].fillna(objects_df["height"].median())
-objects_df["width"] = objects_df["width"].fillna(objects_df["width"].median())
-objects_df[["objectBeginDate", "objectEndDate"]] = objects_df[["objectBeginDate", "objectEndDate"]].fillna("Unknown")
-# there are some '' strings in title which we replace with 'Unknown'
-objects_df['title'] = objects_df['title'].fillna('Unknown').replace('', 'Unknown')
+objects_df[["accessionYear", "primaryImage", "objectName", "title", "period", "dynasty", "reign", 
+            "portfolio", "artistWikidata_URL", "artistAlphaSort", "artistDisplayName", 
+            "artistNationality", "artistBeginDate", "artistEndDate", "dimensions", 
+            "city", "state", "county", "country", "region", "subregion", "excavation"
+]] = objects_df[["accessionYear", "primaryImage", "objectName", "title", "period", "dynasty", "reign", 
+            "portfolio", "artistWikidata_URL", "artistAlphaSort", "artistDisplayName", 
+            "artistNationality", "artistBeginDate", "artistEndDate", "dimensions", 
+            "city", "state", "county", "country", "region", "subregion", "excavation"
+]].fillna("Unknown")
 
-# verifying successful imputations
+# # verifying successful imputations
 print(f"Artists data:\n {artists_df.isna().sum()}\n")
 print(f"Objects data:\n {objects_df.isna().sum()}\n")
 
-### Exporting to CSV ###
+# ### Exporting to CSV ###
 artists_df.to_csv("data//cleaned_data/artists_european_paintings.csv", index=False)
 objects_df.to_csv("data/cleaned_data/objects_european_paintings.csv",index=False)

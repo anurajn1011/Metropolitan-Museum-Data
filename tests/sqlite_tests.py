@@ -18,3 +18,6 @@ print(pd.read_sql("""SELECT DISTINCT department_id FROM Objects;""", conn))
 
 # Checking the size of our Art table 
 print(pd.read_sql("""SELECT COUNT(*) FROM Art""", conn))
+
+# checking the contents of the artists table
+print(pd.read_sql("""SELECT artistAlphaSort FROM artists LIMIT 5""", conn))
