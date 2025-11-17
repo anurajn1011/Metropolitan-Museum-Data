@@ -55,9 +55,7 @@ conn.execute(
         objectBeginDate TEXT,
         objectEndDate TEXT,
         medium TEXT,
-        height REAL,
-        width REAL,
-        length REAL,
+        dimensions TEXT,
         creditLine TEXT,
         city TEXT,
         state TEXT,
@@ -66,8 +64,7 @@ conn.execute(
         region TEXT,
         subregion TEXT,
         excavation TEXT,
-        classification TEXT,
-        isOnView INTEGER
+        classification TEXT
     )
     '''
 )
@@ -76,8 +73,8 @@ conn.execute(
 conn.execute(
     '''
     CREATE TABLE IF NOT EXISTS Artists (
-        artistWikidata_URL INTEGER,
-        artistName TEXT,
+        artistWikidata_URL TEXT,
+        artist_name TEXT,
         artistAlphaSort TEXT PRIMARY KEY,
         artistNationality TEXT,
         artistBeginDate TEXT,
