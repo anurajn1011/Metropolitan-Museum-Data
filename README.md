@@ -1,3 +1,9 @@
+# Metropolitan-Museum-Data
+Repo for collecting and analyzing data from the MET. 
+
+## Resources
+The API for the MET can be found [here](https://metmuseum.github.io/). No key is required. 
+
 ## Requirements
 
 Only Docker Desktop is required. All Python dependencies are installed
