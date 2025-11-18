@@ -1,1 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MET Department Explorer</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <!-- DataTables + jQuery -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .dataTables_wrapper { margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<h2>MET Department Explorer</h2>
+
+<form method="POST">
+    <label>Department:</label>
+    <select name="department">
+        {% for dept in departments %}
+        <option value="{{ dept }}" {% if dept == selected_dept %}selected{% endif %}>{{ dept }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Field:</label>
+    <select name="field">
+        {% for f in fields %}
+        <option value="{{ f }}" {% if f == selected_field %}selected{% endif %}>{{ f }}</option>
+        {% endfor %}
+    </select>
+
+    <label><input type="checkbox" name="collapse" {% if collapse_checked %}checked{% endif %}> Collapse &lt;1% groups</label>
+    <button type="submit">Generate</button>
+</form>
+
+<hr>
+
+{% if chart_html %}
+<div>
+    {{ chart_html | safe }}
+</div>
+
+<h3>Matching Records</h3>
+
+<table id="resultsTable" class="display">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Culture</th>
+            <th>Country</th>
+            <th>Classification</th>
+            <th>Artist</th>
+            <th>Highlight</th>
+            <th>Public Domain</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for _, row in detail_df.iterrows() %}
+        <tr>
+            <td>{{ row.title }}</td>
+            <td>{{ row.culture }}</td>
+            <td>{{ row.country }}</td>
+            <td>{{ row.classification }}</td>
+            <td>{{ row.artist }}</td>
+            <td>{{ row.isHighlight }}</td>
+            <td>{{ row.isPublicDomain }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endif %}
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#resultsTable').DataTable({
+            pageLength: 25,
+            ordering: true,
+            responsive: true
+        });
+    });
+</script>
+
+</body>
+</html>
 
