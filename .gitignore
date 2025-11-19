@@ -2,3 +2,5 @@ data/
 .DS_Store
 met_data
 PH-EDA.ipynb
+dash_app.py
+__pycache__
