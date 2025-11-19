@@ -4,7 +4,6 @@ Set up the Met Museum of Art Schema in SQLite
 '''
 
 import pandas as pd
-import numpy as np
 import sqlite3
 
 # Create tables in sqlite
