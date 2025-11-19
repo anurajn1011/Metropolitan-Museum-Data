@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Cloisters EDA</title>
+
+    <!-- Plotly -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        a {
+            text-decoration: none;
+            color: #0077cc;
+            font-size: 18px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =======================
+     NAVIGATION BAR
+     ======================= -->
+<div style="margin-bottom:20px;">
+    <a href="/" style="margin-right:20px;">Home</a>
+    <a href="/eda">Cloisters EDA</a>
+</div>
+
+<h2>Cloisters EDA Dashboard</h2>
+
+<!-- =======================
+     HEATMAP
+     ======================= -->
+<h3>Material Distribution Across Centuries</h3>
+<div>
+    {{ heatmap_html | safe }}
+</div>
+
+<hr>
+
+<!-- =======================
+     SANKEY
+     ======================= -->
+<h3>Cultural Flow Across Medieval Centuries</h3>
+<div>
+    {{ sankey_html | safe }}
+</div>
+
+</body>
+</html>
