@@ -2,3 +2,5 @@ data/
 .DS_Store
 met_data
 PH-EDA.ipynb
+an_eda.ipynb
+.ipynb_checkpoints/
