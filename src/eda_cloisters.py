@@ -10,6 +10,8 @@ import seaborn as sns
 sns.set_theme(style="whitegrid", font_scale=1.2)
 
 import plotly.graph_objects as go
+import io
+import base64
 
 
 # =============================================================================
@@ -23,7 +25,7 @@ def load_db(db_path):
     SELECT 
         Art.*,
         Objects.department_id,
-        Department.display_name AS department_name
+        Department.displayName AS department_name
     FROM Art
     JOIN Objects ON Art.object_id = Objects.object_id
     JOIN Department ON Objects.department_id = Department.department_id
@@ -32,8 +34,11 @@ def load_db(db_path):
     df = pd.read_sql_query(query, conn)
     conn.close()
 
-    print(f"[INFO] Loaded database: {df.shape[0]} rows, {df.shape[1]} columns")
+    # Filter to Cloisters only
+    df = df[df["department_name"] == "The Cloisters"]
+
     return df
+
 
 
 # =============================================================================
@@ -67,9 +72,8 @@ def preprocess(df):
     """Convert year to int and extract century; assign material family."""
     df["material_family"] = df["medium"].apply(assign_material_family)
 
-    # Extract year
     df["year"] = df["objectBeginDate"].astype(str).str[:4]
-    df = df[df["year"].str.isnumeric()]  # remove invalid years
+    df = df[df["year"].str.isnumeric()]
     df["year"] = df["year"].astype(int)
     df["century"] = df["year"] // 100 + 1
 
@@ -80,40 +84,55 @@ def preprocess(df):
 # 4. EDA — Material Across Centuries (Top 3)
 # =============================================================================
 def run_material_eda(df):
-    """Plot heatmap of top 3 materials across key medieval centuries."""
+    """Return heatmap HTML for top 3 materials across centuries."""
 
     focus_centuries = [12, 13, 14, 15, 16]
     df_focus = df[df["century"].isin(focus_centuries)]
 
-    # Top 3 materials
     top3 = df_focus["material_family"].value_counts().head(3).index.tolist()
     df_focus = df_focus[df_focus["material_family"].isin(top3)]
 
     pivot = pd.crosstab(df_focus["century"], df_focus["material_family"])
 
-    plt.figure(figsize=(8, 6))
-    sns.heatmap(pivot, cmap="YlGnBu", annot=True, fmt="d", linewidths=0.5)
-    plt.title("Top 3 Materials Across Medieval Centuries — Cloisters Collection")
+    plt.figure(figsize=(9, 6))
+    sns.heatmap(
+        pivot,
+        cmap="YlGnBu",
+        annot=True,
+        fmt="d",
+        linewidths=0.6,
+        annot_kws={"color": "black", "size": 11}
+    )
+    plt.title("Top 3 Materials Across Medieval Centuries")
     plt.xlabel("Material Family")
     plt.ylabel("Century")
     plt.tight_layout()
-    plt.show()
+
+    # Convert Matplotlib → HTML <img>
+    buf = io.BytesIO()
+    plt.savefig(buf, format="png", dpi=130, bbox_inches="tight")
+    buf.seek(0)
+    img_html = "<img src='data:image/png;base64,{}'/>".format(
+        base64.b64encode(buf.getvalue()).decode()
+    )
+    plt.close()
+
+    return img_html
 
 
 # =============================================================================
 # 5. EDA — Cultural Flow (Sankey Diagram)
 # =============================================================================
 def run_culture_sankey(df):
-    """Generate a Sankey Diagram showing cultural flow across centuries."""
+    """Return Sankey diagram HTML."""
 
     focus_centuries = [12, 13, 14, 15, 16]
     df_focus = df[df["century"].isin(focus_centuries)]
-    df_focus = df_focus[df_focus["culture"] != "European"]  # Remove vague label
+    df_focus = df_focus[df_focus["culture"] != "European"]
 
-    top5 = df_focus["culture"].value_counts().head(5).index
+    top5 = df_focus["culture"].value_counts().head(5).index.tolist()
     df_focus = df_focus[df_focus["culture"].isin(top5)]
 
-    # Build nodes: all centuries then all cultures
     nodes = []
     node_index = {}
 
@@ -129,7 +148,7 @@ def run_culture_sankey(df):
         node_index[label] = len(nodes)
         nodes.append(label)
 
-    # Colors
+    # Keep your exact color set
     culture_colors = {
         top5[0]: "rgba(199, 21, 133, 0.9)",
         top5[1]: "rgba(30, 144, 255, 0.9)",
@@ -142,10 +161,7 @@ def run_culture_sankey(df):
     node_colors = [century_color] * len(focus_centuries) + [culture_colors[c] for c in top5]
 
     # Build links
-    source = []
-    target = []
-    value = []
-    link_colors = []
+    source, target, value, link_colors = [], [], [], []
 
     for c in focus_centuries:
         df_c = df_focus[df_focus["century"] == c]
@@ -157,7 +173,6 @@ def run_culture_sankey(df):
             value.append(v)
             link_colors.append(culture_colors[cul].replace("0.9", "0.35"))
 
-    # Draw Sankey
     fig = go.Figure(data=[go.Sankey(
         node=dict(
             pad=20,
@@ -174,41 +189,24 @@ def run_culture_sankey(df):
     )])
 
     fig.update_layout(
-        title="Cultural Flow Across Medieval Centuries — Cloisters Collection",
+        title="Cultural Flow Across Medieval Centuries",
         font_size=12,
         width=1100,
         height=650
     )
 
-    fig.show()
+    # Return as HTML snippet
+    return fig.to_html(full_html=False)
 
 
 # =============================================================================
-# 6. Unified Entry Point (what main.py will call)
+# 6. Unified Entry Point for Flask
 # =============================================================================
 def run_eda(db_path):
-    """Run EDA pipeline. Currently supports Cloisters collection only."""
-
-    print("[STEP 1] Loading database...")
     df = load_db(db_path)
-
-    print("[STEP 2] Preprocessing...")
     df = preprocess(df)
 
-    print("[STEP 3] Running Material EDA...")
-    run_material_eda(df)
+    heatmap_html = run_material_eda(df)
+    sankey_html = run_culture_sankey(df)
 
-    print("[STEP 4] Running Cultural Flow EDA...")
-    run_culture_sankey(df)
-
-    # Future extension:
-    # Add other exhibition-specific EDA modules here when available.
-    # Example:
-    # run_asian_eda(df)
-    # run_egyptian_eda(df)
-
-    print("[DONE] EDA pipeline completed.")
-
-# Allows manual running: python eda.py
-if __name__ == "__main__":
-    run_eda("met.db")
+    return heatmap_html, sankey_html
