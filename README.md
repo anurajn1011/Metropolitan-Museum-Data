@@ -1,12 +1,15 @@
 # Metropolitan-Museum-Data
-Repo for collecting and analyzing data from the MET. 
+The Metropolitan Museum of Art in New York city is one of the largest and most prestigious museums in the world. This repository contains code to pull information about the objects in the collection of the Met by department from the publically-accessible MET API, which is directly maintained by the museum. The pipeline results in a Flask application with data visualizations for cross-department analysis of the collection, as well as department-specific visualizations.
+
+## Data
+This repository builds a sqlite database, met.db, from information directly pulled from the MET API. Users can query for infomation on the objects in the collection, including department and artist information, as well as information on object title, composition, creation year, and more. The schema for the met.db database, including types and linking foreign keys, can be found in the docs directory.
 
 ## Resources
 The API for the MET can be found [here](https://metmuseum.github.io/). No key is required. 
 
 ## Requirements
 
-Only Docker Desktop is required. All Python dependencies are installed
+The data pipeline assumes that a directory called met_data exists within the src folder. Only Docker Desktop is required. All Python dependencies are installed
 inside the container.
 
 ------------------------------------------------------------------------
