@@ -4,6 +4,9 @@ The Metropolitan Museum of Art in New York city is one of the largest and most p
 ## Data
 This repository builds a sqlite database, met.db, from information directly pulled from the MET API. Users can query for infomation on the objects in the collection, including department and artist information, as well as information on object title, composition, creation year, and more. The schema for the met.db database, including types and linking foreign keys, can be found in the docs directory.
 
+### Data Disclaimer
+The MET API limits requests to 80 per minute. A single department with over 10,000 objects will take over 2 hours to extract before cleaning. A single department with over 30,000 objects can run for close to 8 hours. Users should plan for a long extraction time if pulling from the larger departments.
+
 ## Resources
 The API for the MET can be found [here](https://metmuseum.github.io/). No key is required. 
 
@@ -11,7 +14,6 @@ The API for the MET can be found [here](https://metmuseum.github.io/). No key is
 ```
 Metropolitan-Museum-Data:.
 |   .gitignore
-|   an_eda.ipynb
 |   Dockerfile
 |   README.md
 |   requirements.txt
@@ -32,6 +34,7 @@ Metropolitan-Museum-Data:.
 |
 +---docs
 |       base.txt
+|       met-art.png 
 |       DAG.png
 |
 +---met_data (*)
@@ -123,5 +126,17 @@ This loads cleaned CSVs into `met.db`
 
 
 ------------------------------------------------------------------------
+
+## Code Files Overview:
+app.py -
+eda_cloisters.py -
+explorer.py -
+interactive_vis.py -
+main.py -
+met-build.py -
+met-databuild.py -
+met-schema.py -
+met_data_vis.ipynb - 
+general-cleaning-script.py - 
 
 ## End of README
