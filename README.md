@@ -4,6 +4,63 @@ Repo for collecting and analyzing data from the MET.
 ## Resources
 The API for the MET can be found [here](https://metmuseum.github.io/). No key is required. 
 
+## Directory Structure
+'''
+C:.
+│   .gitignore
+│   an_eda.ipynb
+│   Dockerfile
+│   README.md
+│   requirements.txt
+│   
+├───.github
+│       CODEOWNERS
+│
+├───data*
+│   │   departments.jsonl           # Example from API pull; Departments
+│   │
+│   ├───10_Egyptian_Art             # Example from API Pull; Department 10
+│   │       artists.jsonl
+│   │       fetch_stats.json
+│   │       objects.jsonl
+│   │       progress.json
+│
+├───docs
+│       base.txt
+│       DAG.png
+│
+├───met_data*
+│       met.db
+│
+├───src
+│   │   app.py
+│   │   eda_cloisters.py
+│   │   explorer.py
+│   │   interactive_vis.py
+│   │   main.py
+│   │   met-build.py
+│   │   met-databuild.py
+│   │   met-schema.py
+│   │   met_data_vis.ipynb
+│   │
+│   ├───clean
+│   │       asian_art-clean.py
+│   │       egyptian_art-clean.py
+│   │       european_paintings-clean.py
+│   │       general-cleaning-script.py
+│   │       medieval_art-clean.py
+│   │       the_cloisters-clean.py
+│   │
+│   └───templates
+│           eda.html
+│           index.html
+│
+└───tests
+        sqlite_tests.py
+'''
+
+All directories with a '*' by them are to be constructed and loaded with data appropriately, they are not found in the repository. 
+
 ## Requirements
 
 Only Docker Desktop is required. All Python dependencies are installed
