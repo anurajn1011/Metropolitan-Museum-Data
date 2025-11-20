@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>MET Department Explorer</title>
+
+    <!-- Plotly -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <!-- DataTables -->
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .dataTables_wrapper {
+            margin-top: 20px;
+        }
+        a {
+            text-decoration: none;
+            color: #0077cc;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =======================
+     NAVIGATION BAR
+     ======================= -->
+<div style="margin-bottom:20px; font-size:18px;">
+    <a href="/" style="margin-right:20px;">Home</a>
+    <a href="/eda">Cloisters EDA</a>
+</div>
+
+<h2>MET Department Explorer</h2>
+
+<!-- =======================
+     FORM
+     ======================= -->
+<form method="POST">
+    <label><b>Department:</b></label>
+    <select name="department">
+        {% for dept in departments %}
+        <option value="{{ dept }}" {% if dept == selected_dept %}selected{% endif %}>
+            {{ dept }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label style="margin-left:20px;"><b>Field:</b></label>
+    <select name="field">
+        {% for f in fields %}
+        <option value="{{ f }}" {% if f == selected_field %}selected{% endif %}>
+            {{ f }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label style="margin-left:20px;">
+        <input type="checkbox" name="collapse" {% if collapse_checked %}checked{% endif %}>
+        Collapse &lt;1% groups
+    </label>
+
+    <button type="submit" style="margin-left:20px;">Generate</button>
+</form>
+
+<hr>
+
+<!-- =======================
+     CHART
+     ======================= -->
+<div>
+    {{ chart_html | safe }}
+</div>
+
+<!-- =======================
+     DETAIL TABLE
+     ======================= -->
+{% if detail_df is not none %}
+<h3>Matching Records</h3>
+
+<table id="resultsTable" class="display">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Culture</th>
+            <th>Country</th>
+            <th>Classification</th>
+            <th>Artist</th>
+            <th>Highlight</th>
+            <th>Public Domain</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for _, row in detail_df.iterrows() %}
+        <tr>
+            <td>{{ row.title }}</td>
+            <td>{{ row.culture }}</td>
+            <td>{{ row.country }}</td>
+            <td>{{ row.classification }}</td>
+            <td>{{ row.artist }}</td>
+            <td>{{ row.isHighlight }}</td>
+            <td>{{ row.isPublicDomain }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<!-- =======================
+     SCRIPTS
+     ======================= -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#resultsTable').DataTable({
+            pageLength: 25,
+            ordering: true,
+            responsive: true
+        });
+    });
+</script>
+
+</body>
+</html>
