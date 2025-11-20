@@ -7,6 +7,65 @@ This repository builds a sqlite database, met.db, from information directly pull
 ## Resources
 The API for the MET can be found [here](https://metmuseum.github.io/). No key is required. 
 
+## Directory Structure
+```
+Metropolitan-Museum-Data:.
+|   .gitignore
+|   an_eda.ipynb
+|   Dockerfile
+|   README.md
+|   requirements.txt
+|
++---.github
+|       CODEOWNERS
+|
++---data (*)
+|   |   departments.jsonl
+|   |
+|   +---10_Egyptian_Art (*)        # Example department data and contents
+|   |       artists.jsonl
+|   |       fetch_stats.json
+|   |       objects.jsonl
+|   |       progress.json
+|   |
+|   \---cleaned_data (*)
+|
++---docs
+|       base.txt
+|       DAG.png
+|
++---met_data (*)
+|       met.db
+|
++---src
+|   |   app.py
+|   |   eda_cloisters.py
+|   |   explorer.py
+|   |   interactive_vis.py
+|   |   main.py
+|   |   met-build.py
+|   |   met-databuild.py
+|   |   met-schema.py
+|   |   met_data_vis.ipynb
+|   |
+|   +---clean
+|   |       asian_art-clean.py
+|   |       egyptian_art-clean.py
+|   |       european_paintings-clean.py
+|   |       general-cleaning-script.py
+|   |       medieval_art-clean.py
+|   |       the_cloisters-clean.py
+|   |
+|   \---templates
+|           eda.html
+|           index.html
+|
+\---tests
+        sqlite_tests.py
+```
+
+All directories with a `(*)` by them are to be constructed and loaded with data appropriately, they are not found in the repository. 
+
 ## Requirements
 
 The data pipeline assumes that a directory called met_data exists within the src folder. Only Docker Desktop is required. All Python dependencies are installed

@@ -4,3 +4,6 @@ met_data
 PH-EDA.ipynb
 dash_app.py
 __pycache__
+an_eda.ipynb
+.ipynb_checkpoints/
+met_data/
