@@ -19,7 +19,7 @@ Metropolitan-Museum-Data:.
 +---data (*)
 |   |   departments.jsonl
 |   |
-|   +---10_Egyptian_Art (*)
+|   +---10_Egyptian_Art (*)        # Example department data and contents
 |   |       artists.jsonl
 |   |       fetch_stats.json
 |   |       objects.jsonl
@@ -61,7 +61,7 @@ Metropolitan-Museum-Data:.
         sqlite_tests.py
 ```
 
-All directories with a '*' by them are to be constructed and loaded with data appropriately, they are not found in the repository. 
+All directories with a `(*)` by them are to be constructed and loaded with data appropriately, they are not found in the repository. 
 
 ## Requirements
 
