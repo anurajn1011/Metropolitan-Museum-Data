@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        a { text-decoration: none; color: #0077cc; margin-right: 20px; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+
+<body>
+
+<!-- =======================
+     UNIFIED NAVIGATION BAR
+     ======================= -->
+<div style="font-size:18px; margin-bottom:20px;">
+    <a href="/">Department Explorer</a>
+    <a href="/eda">Cloisters Department EDA</a>
+    <a href="/box">Artwork Creation Year Distribution</a>
+    <a href="/acq">Accession Year Trends</a>
+    <a href="/highlights_viewer">Department Highlights Gallery</a>
+</div>
+
+<h2>{{ title }}</h2>
+
+<div>
+    {{ chart_html | safe }}
+</div>
+
+</body>
+</html>
