@@ -5,7 +5,7 @@ Repo for collecting and analyzing data from the MET.
 The API for the MET can be found [here](https://metmuseum.github.io/). No key is required. 
 
 ## Directory Structure
-'''
+```
 Metropolitan-Museum-Data:.
 |   .gitignore
 |   an_eda.ipynb
@@ -59,7 +59,7 @@ Metropolitan-Museum-Data:.
 |
 \---tests
         sqlite_tests.py
-'''
+```
 
 All directories with a '*' by them are to be constructed and loaded with data appropriately, they are not found in the repository. 
 
