@@ -31,7 +31,7 @@ Metropolitan-Museum-Data:.
 |       base.txt
 |       DAG.png
 |
-+---met_data
++---met_data (*)
 |       met.db
 |
 +---src
