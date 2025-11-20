@@ -7,6 +7,12 @@ import plotly.express as px
 import plotly.io as pio
 import pandas as pd
 
+from interactive_vis import (
+    create_box_chart,
+    acq_bar_chart,
+    show_highlights
+)
+
 from explorer import (
     FIELDS,
     get_departments,
@@ -17,13 +23,15 @@ from explorer import (
 
 from eda_cloisters import run_eda
 
+
 app = Flask(__name__)
 
+# SQLite database path
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "met.db")
 
 
 # ================================================================
-# Main Page
+# Department Explorer (Main Page)
 # ================================================================
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -78,7 +86,7 @@ def index():
 
 
 # ================================================================
-# Cloisters EDA Page
+# Cloisters EDA
 # ================================================================
 @app.route("/eda")
 def eda_page():
@@ -90,5 +98,62 @@ def eda_page():
     )
 
 
+# ================================================================
+# Creation Year Box Plot
+# ================================================================
+@app.route("/box")
+def box_chart():
+    fig = create_box_chart()
+    chart_html = fig.to_html(full_html=False)
+    return render_template(
+        "chart_single.html",
+        title="Artwork Creation Year Distribution",
+        chart_html=chart_html
+    )
+
+
+# ================================================================
+# Acquisition Year Histogram
+# ================================================================
+@app.route("/acq")
+def acq_chart():
+    fig = acq_bar_chart()
+    chart_html = fig.to_html(full_html=False)
+    return render_template(
+        "chart_single.html",
+        title="Accession Year Trends",
+        chart_html=chart_html
+    )
+
+
+# ================================================================
+# Highlights Viewer (manual next/prev)
+# ================================================================
+@app.route("/highlights_viewer")
+def highlights_viewer():
+    departments = get_departments(DB_PATH)
+    dept = request.args.get("dept", departments[0])
+    i = int(request.args.get("i", 0))
+
+    fig = show_highlights(i, dept)
+    if fig is None:
+        chart_html = "<h3>No highlight images available for this department.</h3>"
+    else:
+        chart_html = fig.to_html(full_html=False)
+
+    return render_template(
+        "highlights_viewer.html",
+        departments=departments,
+        dept=dept,
+        chart_html=chart_html,
+        next_i=i + 1,
+        prev_i=max(i - 1, 0),
+        title="Department Highlights Gallery"
+    )
+
+
+# ================================================================
+# Run App
+# ================================================================
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

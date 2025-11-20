@@ -3,42 +3,34 @@
 
 import sqlite3
 import pandas as pd
-
 import matplotlib.pyplot as plt
 import seaborn as sns
-
-sns.set_theme(style="whitegrid", font_scale=1.2)
-
 import plotly.graph_objects as go
 import io
 import base64
+
+sns.set_theme(style="whitegrid", font_scale=1.2)
 
 
 # =============================================================================
 # 1. Load Database
 # =============================================================================
 def load_db(db_path):
-    """Load the MET database and merge Art + Objects + Department tables."""
+    """Load Art + Objects + Department tables and filter to Cloisters."""
     conn = sqlite3.connect(db_path)
-
     query = """
-    SELECT 
-        Art.*,
-        Objects.department_id,
-        Department.displayName AS department_name
-    FROM Art
-    JOIN Objects ON Art.object_id = Objects.object_id
-    JOIN Department ON Objects.department_id = Department.department_id
+        SELECT 
+            Art.*,
+            Objects.department_id,
+            Department.displayName AS department_name
+        FROM Art
+        JOIN Objects ON Art.object_id = Objects.object_id
+        JOIN Department ON Objects.department_id = Department.department_id
     """
-
-    df = pd.read_sql_query(query, conn)
+    df = pd.read_sql(query, conn)
     conn.close()
 
-    # Filter to Cloisters only
-    df = df[df["department_name"] == "The Cloisters"]
-
-    return df
-
+    return df[df["department_name"] == "The Cloisters"]
 
 
 # =============================================================================
@@ -57,7 +49,7 @@ material_map = {
 
 
 def assign_material_family(medium):
-    """Return standardized material family based on keyword mapping."""
+    """Assign standardized material family based on keyword rules."""
     m = str(medium).lower()
     for family, keywords in material_map.items():
         if any(k in m for k in keywords):
@@ -66,14 +58,15 @@ def assign_material_family(medium):
 
 
 # =============================================================================
-# 3. Preprocessing (Year → Century)
+# 3. Preprocessing
 # =============================================================================
 def preprocess(df):
-    """Convert year to int and extract century; assign material family."""
+    """Assign material family and compute century from objectBeginDate."""
     df["material_family"] = df["medium"].apply(assign_material_family)
 
     df["year"] = df["objectBeginDate"].astype(str).str[:4]
-    df = df[df["year"].str.isnumeric()]
+    df = df[df["year"].str.isnumeric()]  # Filter invalid years
+
     df["year"] = df["year"].astype(int)
     df["century"] = df["year"] // 100 + 1
 
@@ -81,18 +74,17 @@ def preprocess(df):
 
 
 # =============================================================================
-# 4. EDA — Material Across Centuries (Top 3)
+# 4. Material Heatmap
 # =============================================================================
 def run_material_eda(df):
-    """Return heatmap HTML for top 3 materials across centuries."""
+    """Return heatmap (Top 3 materials × centuries) as HTML <img> tag."""
+    centuries = [12, 13, 14, 15, 16]
+    df_c = df[df["century"].isin(centuries)]
 
-    focus_centuries = [12, 13, 14, 15, 16]
-    df_focus = df[df["century"].isin(focus_centuries)]
+    top3 = df_c["material_family"].value_counts().head(3).index.tolist()
+    df_c = df_c[df_c["material_family"].isin(top3)]
 
-    top3 = df_focus["material_family"].value_counts().head(3).index.tolist()
-    df_focus = df_focus[df_focus["material_family"].isin(top3)]
-
-    pivot = pd.crosstab(df_focus["century"], df_focus["material_family"])
+    pivot = pd.crosstab(df_c["century"], df_c["material_family"])
 
     plt.figure(figsize=(9, 6))
     sns.heatmap(
@@ -108,12 +100,12 @@ def run_material_eda(df):
     plt.ylabel("Century")
     plt.tight_layout()
 
-    # Convert Matplotlib → HTML <img>
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png", dpi=130, bbox_inches="tight")
-    buf.seek(0)
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format="png", dpi=130, bbox_inches="tight")
+    buffer.seek(0)
+
     img_html = "<img src='data:image/png;base64,{}'/>".format(
-        base64.b64encode(buf.getvalue()).decode()
+        base64.b64encode(buffer.getvalue()).decode()
     )
     plt.close()
 
@@ -121,34 +113,33 @@ def run_material_eda(df):
 
 
 # =============================================================================
-# 5. EDA — Cultural Flow (Sankey Diagram)
+# 5. Cultural Flow Sankey Diagram
 # =============================================================================
 def run_culture_sankey(df):
-    """Return Sankey diagram HTML."""
+    """Return Sankey diagram (century → culture) as Plotly HTML."""
+    centuries = [12, 13, 14, 15, 16]
+    df_c = df[df["century"].isin(centuries)]
+    df_c = df_c[df_c["culture"] != "European"]
 
-    focus_centuries = [12, 13, 14, 15, 16]
-    df_focus = df[df["century"].isin(focus_centuries)]
-    df_focus = df_focus[df_focus["culture"] != "European"]
-
-    top5 = df_focus["culture"].value_counts().head(5).index.tolist()
-    df_focus = df_focus[df_focus["culture"].isin(top5)]
+    top5 = df_c["culture"].value_counts().head(5).index.tolist()
+    df_c = df_c[df_c["culture"].isin(top5)]
 
     nodes = []
     node_index = {}
 
-    # Add century nodes
-    for c in focus_centuries:
+    # Century nodes
+    for c in centuries:
         label = f"Century {c}"
         node_index[label] = len(nodes)
         nodes.append(label)
 
-    # Add culture nodes
+    # Culture nodes
     for cul in top5:
         label = f"Culture: {cul}"
         node_index[label] = len(nodes)
         nodes.append(label)
 
-    # Keep your exact color set
+    # Color palette (you defined manually — preserved)
     culture_colors = {
         top5[0]: "rgba(199, 21, 133, 0.9)",
         top5[1]: "rgba(30, 144, 255, 0.9)",
@@ -158,14 +149,15 @@ def run_culture_sankey(df):
     }
     century_color = "rgba(180,180,180,0.50)"
 
-    node_colors = [century_color] * len(focus_centuries) + [culture_colors[c] for c in top5]
+    node_colors = [century_color] * len(centuries) + [
+        culture_colors[c] for c in top5
+    ]
 
-    # Build links
     source, target, value, link_colors = [], [], [], []
 
-    for c in focus_centuries:
-        df_c = df_focus[df_focus["century"] == c]
-        counts = df_c["culture"].value_counts()
+    for c in centuries:
+        df_cen = df_c[df_c["century"] == c]
+        counts = df_cen["culture"].value_counts()
 
         for cul, v in counts.items():
             source.append(node_index[f"Century {c}"])
@@ -195,7 +187,6 @@ def run_culture_sankey(df):
         height=650
     )
 
-    # Return as HTML snippet
     return fig.to_html(full_html=False)
 
 
@@ -203,6 +194,7 @@ def run_culture_sankey(df):
 # 6. Unified Entry Point for Flask
 # =============================================================================
 def run_eda(db_path):
+    """Return two HTML components: heatmap + Sankey."""
     df = load_db(db_path)
     df = preprocess(df)
 
