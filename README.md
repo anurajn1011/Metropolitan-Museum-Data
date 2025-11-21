@@ -163,6 +163,23 @@ docker run -it -p 5000:5000 -v "${PWD}\data:/app/data" met python src/app.py
 docker run -it -p 5000:5000 -v "${PWD}/data:/app/data" met python src/app.py
 ```
 
+### Accessing the Application
+
+When running Flask inside Docker, multiple URLs may appear in the console output, for example:
+
+```
+* Running on http://0.0.0.0:5000
+* Running on http://127.0.0.1:5000
+* Running on http://172.17.0.2:5000
+```
+
+This is expected Docker behavior. Only the host-mapped address is used for access:
+
+```
+http://localhost:5000
+```
+
+The other URLs correspond to internal container addresses and are not accessible from the host machine.
 
 ------------------------------------------------------------------------
 
