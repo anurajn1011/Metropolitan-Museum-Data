@@ -146,7 +146,7 @@ This loads cleaned CSVs into `met.db`
 
 ------------------------------------------------------------------------
 
-## Step 5 -- Run the Flask Application (Fully in Docker)
+## Step 5 -- Run the Flask Application
 
 Once `met.db` has been created and populated (Steps 2–4), you can launch
 the Flask app from inside the same Docker image.
