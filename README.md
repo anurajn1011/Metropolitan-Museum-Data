@@ -154,19 +154,13 @@ the Flask app from inside the same Docker image.
 ### Windows PowerShell:
 
 ```powershell
-docker run -it ^
-  -p 5000:5000 ^
-  -v "${PWD}\data:/app/data" ^
-  met python src/app.py
+docker run -it -p 5000:5000 -v "${PWD}\data:/app/data" met python src/app.py
 ```
 
 ### Mac/Linux PowerShell:
 
 ```powershell
-docker run -it \
-  -p 5000:5000 \
-  -v "${PWD}/data:/app/data" \
-  met python src/app.py
+docker run -it -p 5000:5000 -v "${PWD}/data:/app/data" met python src/app.py
 ```
 
 
