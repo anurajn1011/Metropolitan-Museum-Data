@@ -144,6 +144,30 @@ To resume later:
 
 This loads cleaned CSVs into `met.db`
 
+------------------------------------------------------------------------
+
+## Step 5 -- Run the Flask Application (Fully in Docker)
+
+Once `met.db` has been created and populated (Steps 2–4), you can launch
+the Flask app from inside the same Docker image.
+
+### Windows PowerShell:
+
+```powershell
+docker run -it ^
+  -p 5000:5000 ^
+  -v "${PWD}\data:/app/data" ^
+  met python src/app.py
+```
+
+### Mac/Linux PowerShell:
+
+```powershell
+docker run -it \
+  -p 5000:5000 \
+  -v "${PWD}/data:/app/data" \
+  met python src/app.py
+```
 
 
 ------------------------------------------------------------------------
