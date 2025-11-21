@@ -7,6 +7,27 @@ This repository builds a sqlite database, met.db, from information directly pull
 ### Data Disclaimer
 The MET API limits requests to 80 per minute. A single department with over 10,000 objects will take over 2 hours to extract before cleaning. A single department with over 30,000 objects can run for close to 8 hours. Users should plan for a long extraction time if pulling from the larger departments.
 
+### Department Key
+1 - American Decorative Arts                     : 18976 objects
+3 - Ancient West Asian Art                       : 6309 objects
+4 - Arms and Armor                               : 13747 objects
+5 - Arts of Africa, Oceania, and the Americas    : 12235 objects
+6 - Asian Art                                    : 37187 objects
+7 - The Cloisters                                : 2348 objects
+8 - The Costume Institute                        : 31567 objects
+9 - Drawings and Prints                          : 182103 objects
+10 - Egyptian Art                                : 27976 objects
+11 - European Paintings                          : 2639 objects
+12 - European Sculpture and Decorative Arts      : 43946 objects
+13 - Greek and Roman Art                         : 33674 objects
+14 - Islamic Art                                 : 15689 objects
+15 - The Robert Lehman Collection                : 2586 objects
+16 - The Libraries                               : 788 objects
+17 - Medieval Art                                : 7135 objects
+18 - Musical Instruments                         : 5249 objects
+19 - Photographs                                 : 39162 objects
+21 - Modern Art                                  : 15170 objects
+
 ## Resources
 The API for the MET can be found [here](https://metmuseum.github.io/). No key is required. 
 
@@ -128,15 +149,14 @@ This loads cleaned CSVs into `met.db`
 ------------------------------------------------------------------------
 
 ## Code Files Overview:
-app.py -
-eda_cloisters.py -
-explorer.py -
-interactive_vis.py -
-main.py -
-met-build.py -
-met-databuild.py -
-met-schema.py -
-met_data_vis.ipynb - 
-general-cleaning-script.py - 
+app.py - Launches Flask data exploration application
+explorer.py - Set up grouped data exploration for the flask application
+interactive_vis.py - Set up interactive data exploration for the flask application
+main.py - Runs entire data pipeline
+met-build.py - Loads cleaned data into the met.db database
+met-databuild.py - Extracts data from the met api department-by-department
+met-schema.py - Sets up met.db database schema
+met_data_vis.ipynb - Loads interactive visualizations from interactive_vis.py
+general-cleaning-script.py - Cleans extracted json data from met-databuild.py
 
 ## End of README
