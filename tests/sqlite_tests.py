@@ -21,3 +21,10 @@ print(pd.read_sql("""SELECT COUNT(*) FROM Art""", conn))
 
 # checking the contents of the artists table
 print(pd.read_sql("""SELECT artistAlphaSort FROM artists LIMIT 5""", conn))
+
+# checking the end dates of objects
+print(pd.read_sql("""SELECT title, artistAlphaSort, CAST(objectEndDate AS INTEGER) AS objectEndDate FROM Art WHERE CAST(objectEndDate AS INTEGER) > 2024""", conn))
+
+print(pd.read_sql("""SELECT country FROM Art LIMIT 5""", conn))
+
+conn.close()
