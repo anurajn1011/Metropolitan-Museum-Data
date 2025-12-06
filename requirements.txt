@@ -1,0 +1,9 @@
+requests
+pandas
+numpy
+matplotlib
+seaborn
+plotly
+ipywidgets
+flask
+scikit-image

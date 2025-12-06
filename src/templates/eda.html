@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Cloisters Department EDA</title>
+
+    <!-- Plotly -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        a {
+            text-decoration: none;
+            color: #0077cc;
+            font-size: 18px;
+            margin-right: 20px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =======================
+     UNIFIED NAVIGATION BAR
+     ======================= -->
+<div style="margin-bottom:20px; font-size:18px;">
+    <a href="/">Department Explorer</a>
+    <a href="/eda">Cloisters Department EDA</a>
+    <a href="/box">Artwork Creation Year Distribution</a>
+    <a href="/acq">Accession Year Trends</a>
+    <a href="/highlights_viewer">Department Highlights Gallery</a>
+</div>
+
+<h2>Cloisters Department EDA</h2>
+
+<!-- =======================
+     HEATMAP
+     ======================= -->
+<h3>Material Distribution Across Centuries</h3>
+<div>
+    {{ heatmap_html | safe }}
+</div>
+
+<hr>
+
+<!-- =======================
+     SANKEY
+     ======================= -->
+<h3>Cultural Flow Across Medieval Centuries</h3>
+<div>
+    {{ sankey_html | safe }}
+</div>
+
+</body>
+</html>

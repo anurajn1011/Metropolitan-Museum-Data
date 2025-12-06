@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        a { text-decoration: none; color: #0077cc; margin-right: 20px; }
+        a:hover { text-decoration: underline; }
+
+        button { padding: 6px 14px; margin-right: 10px; }
+        select { padding: 6px; margin-right: 10px; }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div style="font-size:18px; margin-bottom:20px;">
+    <a href="/">Department Explorer</a>
+    <a href="/eda">Cloisters Department EDA</a>
+    <a href="/box">Artwork Creation Year Distribution</a>
+    <a href="/acq">Accession Year Trends</a>
+    <a href="/highlights_viewer">Department Highlights Gallery</a>
+</div>
+
+<h2>{{ title }}</h2>
+
+<!-- DEPARTMENT SELECTOR -->
+<form method="GET" action="/highlights_viewer">
+    <label><b>Department:</b></label>
+    <select name="dept">
+        {% for d in departments %}
+            <option value="{{ d }}" {% if d == dept %}selected{% endif %}>{{ d }}</option>
+        {% endfor %}
+    </select>
+    <input type="hidden" name="i" value="0">
+    <button type="submit">Load</button>
+</form>
+
+<hr>
+
+<div>
+    {{ chart_html | safe }}
+</div>
+
+<div style="margin-top:15px;">
+    <button onclick="prev()">Prev</button>
+    <button onclick="next()">Next</button>
+</div>
+
+<script>
+    const baseUrl = "/highlights_viewer?dept={{ dept }}&";
+
+    function next() {
+        window.location.href = baseUrl + "i={{ next_i }}";
+    }
+
+    function prev() {
+        window.location.href = baseUrl + "i={{ prev_i }}";
+    }
+</script>
+
+</body>
+</html>

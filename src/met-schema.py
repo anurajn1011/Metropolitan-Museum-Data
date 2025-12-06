@@ -4,31 +4,36 @@ Set up the Met Museum of Art Schema in SQLite
 '''
 
 import pandas as pd
-import numpy as np
 import sqlite3
 
 # Create tables in sqlite
-conn = sqlite3.connect("../data/met.db")
+conn = sqlite3.connect("met_data/met.db")
 cursor = conn.cursor()
 
+# Department table - contains department name and id
 conn.execute(
     '''
     CREATE TABLE IF NOT EXISTS Department (
         department_id INTEGER PRIMARY KEY,
-        display_name TEXT not null
+        display_name TEXT NOT NULL
     )
 '''
 )
 
+# Objects table - linking table between Art and Departments
+# all objects must have a department
 conn.execute(
     '''
     CREATE TABLE IF NOT EXISTS Objects (
-        department_id INTEGER PRIMARY KEY,
-        object_id INTEGER NOT NULL
+        department_id INTEGER NOT NULL,
+        object_id INTEGER PRIMARY KEY
     )
     '''
 )
 
+
+# Art table - contains all information about the piece in question
+# Links to the Artists table via artist_id, but not a required link
 conn.execute(
     '''
     CREATE TABLE IF NOT EXISTS Art (
@@ -44,14 +49,12 @@ conn.execute(
         dynasty TEXT,
         reign TEXT,
         portfolio TEXT,
-        artist_id INTEGER,
+        artistWikidata_URL TEXT,
+        artistAlphaSort TEXT,
         objectBeginDate TEXT,
         objectEndDate TEXT,
         medium TEXT,
-        height REAL,
-        width REAL,
-        length REAL,
-        weight REAL,
+        dimensions TEXT,
         creditLine TEXT,
         city TEXT,
         state TEXT,
@@ -60,18 +63,18 @@ conn.execute(
         region TEXT,
         subregion TEXT,
         excavation TEXT,
-        classification TEXT,
-        isOnView INTEGER
+        classification TEXT
     )
     '''
 )
 
+# Artists table - contains all information about the artist
 conn.execute(
     '''
     CREATE TABLE IF NOT EXISTS Artists (
-        artist_id INTEGER PRIMARY KEY,
-        artistName TEXT,
-        artistAlphaSort TEXT,
+        artistWikidata_URL TEXT,
+        artist_name TEXT,
+        artistAlphaSort TEXT PRIMARY KEY,
         artistNationality TEXT,
         artistBeginDate TEXT,
         artistEndDate TEXT
